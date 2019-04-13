@@ -1,5 +1,5 @@
 const express = require('express')
-const next = require('next')
+const next = require('next-server')
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
