@@ -27,10 +27,17 @@ Install it and run:
 
 ```bash
 npm install
-npm run dev
+npm run build
+# remove node_modules
+npm i --production
+npm start
+
 # or
 yarn
-yarn dev
+yarn run build
+# remove node_modules
+yarn install --production
+yarn run start
 ```
 
 Deploy it to the cloud with [now](https://zeit.co/now) ([download](https://zeit.co/download))
@@ -41,7 +48,19 @@ now
 
 ## The idea behind the example
 
-Most of the times the default Next server will be enough but sometimes you want to run your own server to customize routes or other kind of the app behavior. Next provides a [Custom server and routing](https://github.com/zeit/next.js#custom-server-and-routing) so you can customize as much as you want.
+Most of the times ~~the default Next server will be enough but sometimes~~ you want to run your own server to customize routes or other kind of the app behavior. Next provides a [Custom server and routing](https://github.com/zeit/next.js#custom-server-and-routing) so you can customize as much as you want.
+
+By requiring `next-server` instead of `next` in server.js you can eliminate production dependensy to webpack and other development modules.
+To do so you first need to bundle next application using `next build` with devDependencies installed, then leave only production `dependencies` required to run the server.
+
+Note: Bundles produced by `next build` have references to `core-js` (v2.x.x), `regenerator-runtime` and `next/router`. First 2 you can add manually to dependencies. `next/router` is part of next, so you have to transpile it using `next-transpile-modules` plugin to avoid runtime reference to `next` module. To do so you need following in `next.config.js`:
+```
+const withTM = require('next-transpile-modules');
+ 
+module.exports = withTM({
+  transpileModules: ['next']
+});
+```
 
 Because the Next.js server is just a node.js module you can combine it with any other part of the node.js ecosystem. in this case we are using express to build a custom router on top of Next.
 
